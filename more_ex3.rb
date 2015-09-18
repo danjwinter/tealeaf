@@ -1,0 +1,1 @@
+#Exception handling is how ruby deals with errors and unexpected items so that a system does not freeze or go in an endless loop.

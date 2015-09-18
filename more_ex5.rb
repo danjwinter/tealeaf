@@ -1,0 +1,1 @@
+#if block is to denote allowing a block to be passed into it, it needs to have block&, otherwise it is just another variable

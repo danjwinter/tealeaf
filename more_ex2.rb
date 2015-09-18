@@ -1,0 +1,1 @@
+#returns Proc object and nothing is printed
