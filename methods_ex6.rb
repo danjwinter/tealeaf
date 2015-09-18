@@ -1,0 +1,1 @@
+puts "the calculate_product method takes two arguemtns but only one was supplied."

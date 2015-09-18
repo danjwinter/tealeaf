@@ -1,0 +1,5 @@
+puts "line 1 returns 2"
+puts "line 2 evaluates 2 but returns nil"
+puts "line 3 returns and evaluates \"Joe\""
+puts "line 4 returns \"four\""
+puts "line 5 returns nil"
