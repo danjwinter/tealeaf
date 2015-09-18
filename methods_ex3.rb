@@ -1,7 +1,3 @@
-def scream(words)
-  words = words + "!!!!"
-  return
-  puts words
+def multiply(x, y)
+  x * y
 end
-
-scream("Yippeee")
