@@ -1,0 +1,1 @@
+puts " 1 is FALSE, 2 is 'Did you get it right?' and 3 is 'Alright now!'"
