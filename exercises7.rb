@@ -1,0 +1,1 @@
+#An array is a set of data whereas a hash contains key-value pairs.
