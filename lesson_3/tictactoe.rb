@@ -1,4 +1,3 @@
-require 'pry'
 
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
@@ -6,6 +5,7 @@ COMPUTER_MARKER = 'O'
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                 [[2, 5, 8], [1, 4, 7], [3, 6, 9]] + # cols
                 [[1, 5, 9], [3, 5, 7]]              # diagonals
+GAME_PLAY = "no"
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -52,13 +52,36 @@ def player_places_piece!(brd)
 end
 
 def computer_places_piece!(brd)
+  square = nil
+  
   WINNING_LINES.each do |line|
-    if brd.values_at(*line).count(PLAYER_MARKER) == 2
-      square = brd.value(line)[' ']
-    else
-  square = empty_squares(brd).sample
+    square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+    break if square
+  end
+  
+  if !square
+    WINNING_LINES.each do |line|
+      square = find_at_risk_square(line, brd, PLAYER_MARKER)
+      break if square
     end
+  end
+  
+  if !square
+    square = 5 if brd[5] == INITIAL_MARKER
+  end
+  
+  if !square
+    square = empty_squares(brd).sample
+  end
+
   brd[square] = COMPUTER_MARKER
+end
+
+def find_at_risk_square(line, board, marker)
+  if board.values_at(*line).count(marker) == 2
+    board.select { |k,v| line.include?(k) && v == INITIAL_MARKER }.keys.first
+  else
+    nil
   end
 end
 
@@ -98,13 +121,51 @@ player_win = 0
 computer_win = 0
 loop do
   board = initialize_board
-  loop do
-    display_board(board)
-    player_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
-    computer_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
+  if GAME_PLAY == "choose"
+    prompt "Who should go first? (c)omputer or (h)uman?"
+    first = gets.chomp.downcase
+    case
+    when first.start_with?('c')
+      loop do
+        display_board(board)
+        computer_places_piece!(board)
+        display_board(board)
+        break if someone_won?(board) || board_full?(board)
+        player_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
+      end
+    when first.start_with?('h')
+      loop do
+        display_board(board)
+        player_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
+        computer_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
+      end
+    end
+  else
+    x = [1, 2]
+    if x.sample == 1
+      loop do
+        display_board(board)
+        computer_places_piece!(board)
+        display_board(board)
+        break if someone_won?(board) || board_full?(board)
+        player_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
+      end
+    else
+      loop do
+        display_board(board)
+        player_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
+        computer_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
+      end
+    end
   end
+      
+    
 
   display_board(board)
   
@@ -121,7 +182,7 @@ loop do
   end
   
   prompt "You have #{player_win} wins and the computer has #{computer_win} wins."
-  prompt "Would you like to play to 5?"
+  prompt "Play to best of 5? (y) (n)"
   answer = gets.chomp
 
   break if computer_win == 5 || player_win == 5
