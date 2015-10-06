@@ -13,8 +13,7 @@ end
 def first_turn(player_hand, computer_hand, deck)
   player_hand.merge!(draw_card(deck, 2))
   computer_hand.merge!(draw_card(deck, 2))
-  puts "you have #{player_hand.keys.join(' and ')}"
-  puts "the computer has #{computer_hand.keys.join(' and ')}"
+  puts "Your cards: #{player_hand.keys.join(', ')}"
 end
 
 def hit(hand, deck)
@@ -61,9 +60,12 @@ def computer_win?(player_hand, computer_hand)
   score(player_hand) < score(computer_hand)
 end
 
+player_total_wins = 0
+computer_total_wins = 0
 loop do
   player_hand = {}
   computer_hand = {}
+  
 
   first_turn(player_hand, computer_hand, deck)
   puts "you have #{score(player_hand)} and the computer is showing a #{computer_hand.keys[0]}"
@@ -80,7 +82,7 @@ loop do
 
     if !busted?(score(player_hand))
       computer_turn(computer_hand, deck)
-      puts "you have #{score(player_hand)} and the computer has #{score(computer_hand)}"
+      puts "you have #{score(player_hand)} and the computer has #{score(computer_hand)}(#{computer_hand.keys.join(', ')})"
     else
       puts "you busted!"
       break
@@ -88,21 +90,26 @@ loop do
 
     if player_win?(player_hand, computer_hand)
       puts "you won!"
+      player_total_wins += 1
       break
     elsif tie?(player_hand, computer_hand)
       puts "tie!"
       break
     elsif computer_win?(player_hand, computer_hand) && score(computer_hand) < 22
       puts "you lost!"
+      computer_total_wins += 1
       break
     elsif score(computer_hand) > 21
       puts "computer busted! I guess you won..."
+      player_total_wins += 1
       break
     end
   end
-  puts "do you want to play again?"
+  puts "do you want to keep playing to 5? Total wins - You: #{player_total_wins}  Computer: #{computer_total_wins}"
   again = gets.chomp.downcase
   break if again.start_with?('n')
+  break if player_total_wins == 5
+  break if computer_total_wins == 5
 end
 
 #
